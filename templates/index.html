@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traceroute Tool</title>
+    <style>
+        body {
+            margin: 20px; display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: "Poor Richard",serif;
+        }
+        table { width: 90%; border-collapse: collapse;  text-align: center}
+        th, td { border: 1px solid #636262; padding: 8px; }
+        th { background-color: #a69999; }
+        input,button{ padding: 5px; font-family: "Poor Richard",serif; border-radius: 5px;}
+        button:hover{cursor: pointer;}
+        #loading {
+            display: none; position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            color: white; text-align: center;
+            line-height: 100vh;
+            font-size: 24px;z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div id="loading">Tracing the route...</div>
+    <h1>TraceYourRoute</h1>
+    <form action="/trace" method="post">
+        <label for="target">Enter Domain Name:</label>
+        <input type="text" id="target" name="target" required>
+        <button type="submit">Trace Path</button>
+    </form>
+
+    {% if data %}
+    <h2>Traceroute Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Hop_Id</th>
+                <th>Source_Hop</th>
+                <th>Packet_1</th>
+                <th>Packet_2</th>
+                <th>Packet_3</th>
+                <th>Destination_Hop</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hop in data %}
+            <tr>
+                <td>{{ hop.hopNumber }}</td>
+                <td>{{ hop.sourceIp}}</td>
+                <td>{{ hop.packetDelay1 }}ms</td>
+                <td>{{ hop.packetDelay2 }}ms</td>
+                <td>{{ hop.packetDelay3 }}ms</td>
+                <td>{{ hop.destIp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</body>
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('loading').style.display = 'block';
+    });
+</script>
+</html>
